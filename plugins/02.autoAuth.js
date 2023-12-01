@@ -1,17 +1,17 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 export default defineNuxtPlugin(async ({payload}) => {
   onAuthStateChanged(getAuth(), async (userDetails) => {
     const { $db } = useNuxtApp()
     if (userDetails) {
-      const { user  } = payload.pinia;
-      user.isLoggedIn = true;
-      user.userDetails = userDetails
+      const { userStore,authStore } = payload.pinia;
+      userStore.isLoggedIn = true;
+      authStore.authDetails = userDetails
 
-      const ref = await doc($db,"users",user.userDetails.uid)
+      const ref = doc($db,"users",authStore.authDetails.uid)
       const docSnap = await getDoc(ref)
       const data = docSnap.data();
-      user.isAdmin = data.isAdmin
+      userStore.userDetails = data
     } else {
       console.log('user not found');
     }

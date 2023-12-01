@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen bg-stone-800">
+    <UForm class="h-screen bg-stone-800">
         <UContainer class="bg-stone-800 py-8 " >
             <UCard :ui="{ body : { base : 'flex '}}" >
                 <div class="w-1/2">
@@ -46,12 +46,12 @@
                 </div>
             </UCard>
         </UContainer>
-    </div>
+    </UForm>
 </template>
 <script setup>
 const toast = useToast()
 const isSignIn = ref(true);
-const userStore = useUserStore();
+const authStore = useAuthStore();
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("")
@@ -67,8 +67,7 @@ const loginHandler = async () => {
     if(email === "" || password === ""){
         toast.add({ title: "Enter all fields to signup"})
     }
-    const user = await userStore.logIn(email.value, password.value);
-    nullField()
+    const user = await authStore.logIn(email.value, password.value);
     if (user.status === 200) {
         router.push("/dashboard");
     }
@@ -79,17 +78,10 @@ const siginHandler = async () => {
     if(email === "" || password === "" || adminSelected === ""){
         toast.add({ title: "Enter all fields to signup"})
     }
-    const user = await userStore.signIn(email.value, password.value, adminSelected.value);
-    nullField()
+    const user = await authStore.signIn(email.value, password.value, adminSelected.value, name.value);
     if (user.status === 200) {
         router.push("/dashboard");
     }
 };
-const nullField = ()=>{
-    email.value = "";
-    password.value = "",
-    confirmPassword.value = "",
-    adminSelected.value = "",
-    name.value = ""
-}
+
 </script>
