@@ -4,15 +4,16 @@
             <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" alt="Avatar" size="3xl"  icon="i-heroicons-photo" class="ring-8 ring-white"  />
         </div>
     </div>
-    <div class="mt-12 flex justify-center gap-4 font-semibold text-lg"><span class="font-medium">Name : </span>  {{ userDetails?.email.split("@")[0].toUpperCase() }}</div>
-    <div class=" flex mt-2 justify-center gap-4 font-semibold text-lg"> <span class="font-medium">Email :</span>   {{ userDetails?.email }}</div>
-    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg"> <span class="font-medium"> Role : </span> {{ isAdmin ? "Admin" : "Guest" }}</div>
-    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg" v-if="isAdmin"><span class="font-medium"> Polls Created : </span> {{ isAdmin ? "Admin" : "Guest" }}</div>
-    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg" v-else><span class="font-medium"> Polls Voted : </span> {{ isAdmin ? "Admin" : "Guest" }}</div>
+    <div class="mt-12 flex justify-center gap-4 font-semibold text-lg"><span class="font-medium">Name : </span>  {{ userDetails?.name}}</div>
+    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg"> <span class="font-medium">Email :</span>   {{ userDetails?.email }}</div>
+    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg"> <span class="font-medium"> Role : </span> {{ userDetails.isAdmin ? "Admin" : "Guest" }}</div>
+    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg" v-if="userDetails?.isAdmin"><span class="font-medium"> Polls Created : </span> {{ userDetails?.count ? userDetails.count : 0}}</div>
+    <div class="flex mt-2 justify-center gap-4 font-semibold text-lg" v-else><span class="font-medium"> Polls Voted : </span>  {{ userDetails?.count ? userDetails.count : 0 }} </div>
 </template>
 <script setup>
 const userStore = useUserStore();
-const { userDetails , isAdmin } = storeToRefs(userStore)
+const { userDetails } = storeToRefs(userStore)
+userStore.getUserDetails()
 </script>
 <style scoped>
 .main {

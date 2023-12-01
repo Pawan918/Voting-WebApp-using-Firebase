@@ -1,5 +1,6 @@
-import { collection, getDocs,addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { collection,addDoc, doc, updateDoc, deleteDoc, onSnapshot,setDoc,increment } from "firebase/firestore";
 import { useDbStore } from "./db";
+import { useAuthStore } from "./auth";
 export const useSurveyStore = defineStore("survey",{
     state : ()=>({
         surveyData : [],
@@ -8,10 +9,8 @@ export const useSurveyStore = defineStore("survey",{
         async getSurveyData(){
             try{
                 const database = useDbStore();
-                // let isSnap = false
-                await onSnapshot(collection(database.db,"survey"),doc =>{
+                 onSnapshot(collection(database.db,"survey"),doc =>{
                     this.surveyData = [];
-                    // console.log('snapshot called');
                     doc.forEach((data)=>{
                        this.surveyData.push({
                            id: data.id,
@@ -36,10 +35,15 @@ export const useSurveyStore = defineStore("survey",{
         async addSurveyData(data){
             try{
                 const database = useDbStore();
+                const auth = useAuthStore();
                 const docRef = await addDoc(collection(database.db,"survey"),{
                     question : data.question,
                     options : data.option
                  });
+                 const countRef = doc(database.db,"users",auth.authDetails.uid)
+                 await setDoc(countRef,{
+                     count : increment(1)
+                     },{merge:true})
                  if(docRef){
                     console.log(docRef.id);
                     return {
@@ -81,7 +85,6 @@ export const useSurveyStore = defineStore("survey",{
         },
         async deleteSurveyData(id){
             try{
-                console.log(id);
                 const database = useDbStore();
                 await deleteDoc(doc(database.db, 'survey',id));
                     return {

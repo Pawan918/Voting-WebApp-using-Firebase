@@ -16,16 +16,15 @@
 <script setup>
 
 import { useUserStore } from "~/stores/user";
-
+import { useAuthStore } from "~/stores/auth"
 const userStore = useUserStore();
 const toast = useToast();
 const router = useRouter();
+const authStore = useAuthStore()
 
 let { isLoggedIn, userDetails } = storeToRefs(userStore);
 const logOutHandler = async () => {
-    const res = await userStore.signOutUser()
-    isLoggedIn.value = false;
-    userDetails.value = null;
+    const res = await authStore.signOutUser()
     router.push('/login')
     toast.add({ title: res.message })
 }
